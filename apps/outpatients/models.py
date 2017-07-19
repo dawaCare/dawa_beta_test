@@ -5,6 +5,8 @@ from django.db import models
 from django.utils import timezone
 
 from apps.locations.models import Address
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # Create your models here.
 
@@ -267,3 +269,25 @@ class AppointmentReminder(models.Model):
 
     class Meta:
         db_table = 'appt_reminders'
+
+
+class Comment(models.Model):
+    comment = models.TextField()
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    created_at = models.DateTimeField(editable=False)
+    updated_at = models.DateTimeField()
+
+    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    def save(self, *args, **kwargs):
+        # ''' On save, update timestamps '''
+        if not self.id:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
+        return super(User, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'comments'
