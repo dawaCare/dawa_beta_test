@@ -107,16 +107,16 @@ class Outpatient(models.Model):
     diagnoses = models.ManyToManyField(Diagnosis)
     allegies = models.ManyToManyField(Allergy)
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
-
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
+    #
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'outpatients'
@@ -146,16 +146,16 @@ class EmergencyContact(models.Model):
     address = models.ForeignKey(Address)
     outpatient = models.ForeignKey(Outpatient)
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
-
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
+    #
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'emergency_contacts'
@@ -196,16 +196,16 @@ class Appointment(models.Model):
 
     followed_up = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
-
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
+    #
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'appointments'
@@ -232,16 +232,16 @@ class MedicationReminder(models.Model):
 
     date = models.DateTimeField()
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
-
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
+    #
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'med_reminders'
@@ -256,16 +256,16 @@ class AppointmentReminder(models.Model):
 
     date = models.DateTimeField()
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
-
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
+    #
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'appt_reminders'
@@ -278,16 +278,16 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    created_at = models.DateTimeField(editable=False)
-    updated_at = models.DateTimeField()
+    # created_at = models.DateTimeField(editable=False)
+    # updated_at = models.DateTimeField()
 
-    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
-    def save(self, *args, **kwargs):
-        # ''' On save, update timestamps '''
-        if not self.id:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'comments'
+    # # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    # def save(self, *args, **kwargs):
+    #     # ''' On save, update timestamps '''
+    #     if not self.id:
+    #         self.created_at = timezone.now()
+    #     self.updated_at = timezone.now()
+    #     return super(User, self).save(*args, **kwargs)
+    #
+    # class Meta:
+    #     db_table = 'comments'
