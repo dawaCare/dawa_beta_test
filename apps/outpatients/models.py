@@ -207,3 +207,63 @@ class Appointment(models.Model):
 
     class Meta:
         db_table = 'appointments'
+
+class PatientCareCoordinator(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    address = models.ForeignKey(Address)
+    main_phone = models.CharField(max_length=10)
+    alt_phone = models.CharField(max_length=10)
+    username = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'pccs'
+
+class MedicationReminder(models.Model):
+    prescribed_med = models.ForeignKey(PrescribedMed)
+    pcc = models.ForeignKey(PatientCareCoordinator)
+
+    contacted_patient = models.BooleanField(default=False)
+    sent = models.BooleanField(default=False)
+    message = models.TextField()
+
+    date = models.DateTimeField()
+
+    created_at = models.DateTimeField(editable=False)
+    updated_at = models.DateTimeField()
+
+    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    def save(self, *args, **kwargs):
+        # ''' On save, update timestamps '''
+        if not self.id:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
+        return super(User, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'med_reminders'
+
+class AppointmentReminder(models.Model):
+    appt_date = models.ForeignKey(Appointment)
+    pcc = models.ForeignKey(PatientCareCoordinator)
+
+    contacted_patient = models.BooleanField(default=False)
+    sent = models.BooleanField(default=False)
+    message = models.TextField()
+
+    date = models.DateTimeField()
+
+    created_at = models.DateTimeField(editable=False)
+    updated_at = models.DateTimeField()
+
+    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    def save(self, *args, **kwargs):
+        # ''' On save, update timestamps '''
+        if not self.id:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
+        return super(User, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'appt_reminders'
