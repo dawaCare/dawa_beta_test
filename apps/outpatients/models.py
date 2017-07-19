@@ -62,16 +62,6 @@ class MedicationCategory(models.Model):
     class Meta:
         db_table = 'medication_categories'
 
-class Medication(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    medication_category = models.ForeignKey(MedicationCategory)
-
-    prescribers = models.ManyToManyField(Outpatient, through='PrescribedMed')
-
-    class Meta:
-        db_table = 'medications'
-
 
 class DiagnosisCategories(models.Model):
     name = models.CharField(max_length=50)
@@ -129,6 +119,16 @@ class Outpatient(models.Model):
     class Meta:
         db_table = 'outpatients'
 
+class Medication(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    medication_category = models.ForeignKey(MedicationCategory)
+
+    prescribers = models.ManyToManyField(Outpatient, through='PrescribedMed')
+
+    class Meta:
+        db_table = 'medications'
+
 class EmergencyContact(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -184,5 +184,26 @@ class Visit(models.Model):
         db_table = 'visits'
 
 class Appointment(models.Model):
-    pass
-    
+    appt_date = models.DateTimeField()
+
+    facility = models.ForeignKey(Facility)
+    doctor = models.ForeignKey(Doctor)
+    outpatient = models.ForeignKey(Outpatient)
+    department = models.ForeignKey(Department)
+    visit = models.ForeignKey(Visit)
+
+    followed_up = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(editable=False)
+    updated_at = models.DateTimeField()
+
+    # https://stackoverflow.com/questions/1737017/django-auto-now-and-auto-now-add/1737078#1737078
+    def save(self, *args, **kwargs):
+        # ''' On save, update timestamps '''
+        if not self.id:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
+        return super(User, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'appointments'
