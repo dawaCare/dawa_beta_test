@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.outpatients',
     'apps.locations',
     'apps.todo',
+    'nested_admin',
 ]
 
 MIDDLEWARE = [

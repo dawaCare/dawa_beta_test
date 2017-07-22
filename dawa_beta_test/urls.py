@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('apps.todo.urls')),
+    url(r'^nested_admin/', include('nested_admin.urls')),
 ]

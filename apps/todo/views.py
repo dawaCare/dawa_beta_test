@@ -11,7 +11,7 @@ class Todo(View):
         print(AppointmentReminder.objects.all())
         # med_todos = MedicationReminder.objects.get(user=request.user.id)
         # print(med_todos)
-        med_todos = MedicationReminder.objects.filter(user=request.user.id)
+        med_todos = MedicationReminder.objects.filter(pcc=request.user.id)
         appt_todos = AppointmentReminder.objects.filter(pcc=request.user.id)
         context = {
             'med_todos' : med_todos,
