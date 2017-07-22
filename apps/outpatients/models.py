@@ -7,6 +7,7 @@ from django.utils import timezone
 from apps.locations.models import Address
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -210,21 +211,21 @@ class Appointment(models.Model):
     class Meta:
         db_table = 'appointments'
 
-class PatientCareCoordinator(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    address = models.ForeignKey(Address)
-    main_phone = models.CharField(max_length=10)
-    alt_phone = models.CharField(max_length=10)
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
-
-    class Meta:
-        db_table = 'pccs'
+# class PatientCareCoordinator(models.Model):
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
+#     address = models.ForeignKey(Address)
+#     main_phone = models.CharField(max_length=10)
+#     alt_phone = models.CharField(max_length=10)
+#     username = models.CharField(max_length=50)
+#     password = models.CharField(max_length=50)
+#
+#     class Meta:
+#         db_table = 'pccs'
 
 class MedicationReminder(models.Model):
     prescribed_med = models.ForeignKey(PrescribedMed)
-    pcc = models.ForeignKey(PatientCareCoordinator)
+    user = models.ForeignKey(User, null=True)
 
     contacted_patient = models.BooleanField(default=False)
     sent = models.BooleanField(default=False)
@@ -248,7 +249,7 @@ class MedicationReminder(models.Model):
 
 class AppointmentReminder(models.Model):
     appt_date = models.ForeignKey(Appointment)
-    pcc = models.ForeignKey(PatientCareCoordinator)
+    pcc = models.ForeignKey(User)
 
     contacted_patient = models.BooleanField(default=False)
     sent = models.BooleanField(default=False)

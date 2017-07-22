@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.outpatients.models import Outpatient, EmergencyContact, MedicationCategory, Medication, PrescribedMed, Diagnosis, DiagnosisCategories, Visit, Allergy, Appointment, Facility, Department, Doctor, Specialty, Certification, AppointmentReminder, MedicationReminder, PatientCareCoordinator, Comment
+from apps.outpatients.models import Outpatient, EmergencyContact, MedicationCategory, Medication, PrescribedMed, Diagnosis, DiagnosisCategories, Visit, Allergy, Appointment, Facility, Department, Doctor, Specialty, Certification, AppointmentReminder, MedicationReminder, Comment
 from django.contrib.contenttypes.admin import GenericStackedInline
 
 
@@ -42,5 +42,5 @@ admin.site.register(Specialty)
 admin.site.register(Certification)
 admin.site.register(AppointmentReminder)
 admin.site.register(MedicationReminder)
-admin.site.register(PatientCareCoordinator)
+# admin.site.register(PatientCareCoordinator)
 admin.site.register(Comment)
