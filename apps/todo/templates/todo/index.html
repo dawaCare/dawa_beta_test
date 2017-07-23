@@ -10,15 +10,49 @@
   <h1>Medication Todos</h1>
   {% for todo in med_todos %}
   <ul>
-    <li>{{todo.date}}</li>
+    <li>Date: {{todo.date}}</li>
+    <li>Contacted Patient? {{todo.contacted_patient}}</li>
+    <li>Sent? {{todo.sent}}</li>
+    <li>Message: {{todo.message}}</li>
+    <li>Medication Title: {{todo.prescribed_med.medication.name}}</li>
+    <li>Outpatient Name: {{todo.prescribed_med.outpatient.first_name}} {{todo.prescribed_med.outpatient.last_name}}</li>
+    <li>Dosage: {{todo.prescribed_med.dosage_num}} {{todo.prescribed_med.dosage_unit}}</li>
+    <li>Frequency: {{todo.prescribed_med.frequency}}</li>
   </ul>
   {% endfor %}
 
   <h1>Appointment Todos</h1>
-  {% for todo in appt_todos %}
-  <ul>
-    <li>{{todo.date}}</li>
-  </ul>
-  {% endfor %}
+  <table style="width:100%">
+    <tr>
+      <th>Reminder Date</th>
+      <th>Outpatient</th>
+      <th>Appointment Date</th>
+      <th>Facility</th>
+      <th>Doctor</th>
+      <th>Department</th>
+      <th>Date of Visit</th>
+      <th>Contacted Patient?</th>
+      <th>Sent?</th>
+      <th>Message</th>
+      <th>Followed Up?</th>
+    </tr>
+    {% for todo in appt_todos %}
+    <tr>
+      <td>{{todo.date}}</td>
+      <td>{{todo.appt_date.outpatient.first_name}} {{todo.appt_date.outpatient.last_name}}</td>
+      <td>{{todo.appt_date.appt_date}}</td>
+      <td>{{todo.appt_date.facility.name}}</td>
+      <td>{{todo.appt_date.doctor.first_name}} {{todo.appt_date.doctor.last_name}}</td>
+      <td>{{todo.appt_date.department.name}}</td>
+      <td>{{todo.appt_date.visit.visit_date}}</td>
+      <td>{{todo.contacted_patient}}</td>
+      <td>{{todo.sent}}</td>
+      <td>{{todo.message}}</td>
+      <td>{{todo.appt_date.followed_up}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+
 </body>
 </html>
