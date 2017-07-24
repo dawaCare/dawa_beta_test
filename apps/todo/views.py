@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Todo(View):
     def get(self, request):
-        print request.user.id
+        print(request.user.id)
         print(MedicationReminder.objects.all())
         print(AppointmentReminder.objects.all())
         # med_todos = MedicationReminder.objects.get(user=request.user.id)
@@ -21,5 +21,5 @@ class Todo(View):
 
 class PatientContact(View):
     def post(self, request):
-        print request.POST
+        print (request.POST)
         # input type checkbox doesnt send input data if false
