@@ -18,3 +18,8 @@ class Todo(View):
             'appt_todos' : appt_todos,
         }
         return render(request, 'todo/index.html', context)
+
+class PatientContact(View):
+    def post(self, request):
+        print request.POST
+        # input type checkbox doesnt send input data if false

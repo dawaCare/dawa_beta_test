@@ -45,7 +45,13 @@
       <td>{{todo.appt_date.doctor.first_name}} {{todo.appt_date.doctor.last_name}}</td>
       <td>{{todo.appt_date.department.name}}</td>
       <td>{{todo.appt_date.visit.visit_date}}</td>
-      <td>{{todo.contacted_patient}}</td>
+      <td>
+        <form action="{% url 'contacted_patient' %}" method="POST">
+          {% csrf_token %}
+          <input type="checkbox" name="contacted_patient" value="{{todo.contacted_patient}}">
+          <input type="submit" value="OK">
+        </form>
+      </td>
       <td>{{todo.sent}}</td>
       <td>{{todo.message}}</td>
       <td>{{todo.appt_date.followed_up}}</td>
