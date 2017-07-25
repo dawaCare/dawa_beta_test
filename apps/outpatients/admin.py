@@ -1,7 +1,10 @@
 from django.contrib import admin
 from apps.outpatients.models import Outpatient, EmergencyContact, MedicationCategory, Medication, PrescribedMed, Diagnosis, DiagnosisCategories, Visit, Allergy, Appointment, Facility, Department, Doctor, Specialty, Certification, AppointmentReminder, MedicationReminder, Comment
 from django.contrib.contenttypes.admin import GenericStackedInline
-import nested_admin
+# import nested_admin
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin
+
+
 
 
 # Register your models here.
@@ -29,52 +32,71 @@ class PrescribedMedAdmin(admin.ModelAdmin):
 class AppointmentInline(admin.TabularInline):
     model = Appointment
 
-# class PrescribedMedInline(admin.TabularInline):
-#     model = PrescribedMed
 
-class MedicationReminderInline(nested_admin.NestedTabularInline):
-    model = MedicationReminder
-    sortable_field_name = "id"
-
-class PrescribedMedInline(nested_admin.NestedTabularInline):
-    model = PrescribedMed
-    sortable_field_name = "id"
-    inlines = [
-        MedicationReminderInline
-    ]
-
-# class OutpatientAdmin(admin.ModelAdmin):
-#     inlines = [
-#         AppointmentInline,
-#         PrescribedMedInline,
-#     ]
-
-class EmergencyContactInline(nested_admin.NestedTabularInline):
-    model = EmergencyContact
-
-class VisitInline(nested_admin.NestedTabularInline):
+class VisitInline(NestedStackedInline):
     model = Visit
+    extra = 1
 
-class AppointmentReminderInline(nested_admin.NestedTabularInline):
+class EmergencyContactInline(NestedStackedInline):
+    model = EmergencyContact
+    extra = 1
+
+class AppointmentReminderInline(NestedStackedInline):
     model = AppointmentReminder
+    extra = 1
 
-class AppointmentInline(nested_admin.NestedTabularInline):
+class AppointmentInline(NestedStackedInline):
     model = Appointment
-    sortable_field_name = "id"
-    inlines = [
-        AppointmentReminderInline
-    ]
+    extra = 1
+    inlines = [AppointmentReminderInline]
 
+class MedicationReminderInline(NestedStackedInline):
+    model = MedicationReminder
+    extra = 1
 
-class OutpatientAdmin(nested_admin.NestedModelAdmin):
-    inlines = [
-        PrescribedMedInline,
-        EmergencyContactInline,
-        VisitInline,
-        AppointmentInline,
-    ]
-    list_display = ('last_name', 'first_name', 'date_of_birth', 'address', 'get_diagnoses', 'get_meds')
-    search_fields = ['last_name', 'first_name']
+class PrescribedMedInline(NestedStackedInline):
+    model = PrescribedMed
+    extra = 1
+    inlines = [MedicationReminderInline]
+
+class OutpatientAdmin(NestedModelAdmin):
+    model = Outpatient
+    extra = 1
+    fk_name = 'Outpatient'
+    inlines = [PrescribedMedInline, AppointmentInline, EmergencyContactInline, VisitInline]
+#
+# # class OutpatientAdmin(admin.ModelAdmin):
+# #     inlines = [
+# #         AppointmentInline,
+# #         PrescribedMedInline,
+# #     ]
+#
+# class EmergencyContactInline(nested_admin.NestedTabularInline):
+#     model = EmergencyContact
+#
+# class VisitInline(nested_admin.NestedTabularInline):
+#     model = Visit
+#
+# class AppointmentReminderInline(nested_admin.NestedTabularInline):
+#     model = AppointmentReminder
+#
+# class AppointmentInline(nested_admin.NestedTabularInline):
+#     model = Appointment
+#     sortable_field_name = "id"
+#     inlines = [
+#         AppointmentReminderInline
+#     ]
+#
+#
+# class OutpatientAdmin(nested_admin.NestedModelAdmin):
+#     inlines = [
+#         PrescribedMedInline,
+#         EmergencyContactInline,
+#         VisitInline,
+#         AppointmentInline,
+#     ]
+#     list_display = ('last_name', 'first_name', 'date_of_birth', 'address', 'get_diagnoses', 'get_meds')
+#     search_fields = ['last_name', 'first_name']
 
 admin.site.register(Outpatient, OutpatientAdmin)
 admin.site.register(EmergencyContact)

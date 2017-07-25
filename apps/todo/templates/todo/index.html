@@ -48,7 +48,7 @@
       <td>
         <form action="{% url 'contacted_patient' %}" method="POST">
           {% csrf_token %}
-          <input type="checkbox" name="contacted_patient" value="{{todo.contacted_patient}}">
+          <input type="hidden" name="todoid" value="{{ todo.id }}">
           <input type="submit" value="OK">
         </form>
       </td>

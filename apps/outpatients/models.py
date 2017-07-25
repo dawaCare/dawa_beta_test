@@ -159,6 +159,7 @@ class PrescribedMed(models.Model):
     route = models.CharField(max_length=10)
     frequency = models.CharField(max_length=10)
     dosage_unit = models.CharField(max_length=10)
+    end_date = models.DateField(null=True)
 
     class Meta:
         db_table = 'prescribedmeds'

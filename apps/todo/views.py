@@ -22,4 +22,11 @@ class Todo(View):
 class PatientContact(View):
     def post(self, request):
         print (request.POST)
+        appt_rem = AppointmentReminder.objects.get(id=request.POST['todoid'])
+        print(appt_rem)
+        print(appt_rem.appt_date.appt_date)
+        appt_rem.contacted_patient = "True"
+        print(appt_rem.contacted_patient)
+        appt_rem.save()
+        return redirect('/')
         # input type checkbox doesnt send input data if false
