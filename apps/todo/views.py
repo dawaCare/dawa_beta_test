@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from apps.outpatients.models import Outpatient, MedicationReminder, AppointmentReminder
+from apps.outpatients.models import *
 from django.contrib.auth.models import User
 # Create your views here.
 
@@ -19,10 +19,10 @@ class Todo(View):
         }
         return render(request, 'todo/index.html', context)
 
-class PatientContact(View):
+class AppointmentContact(View):
     def post(self, request):
         print (request.POST)
-        appt_rem = AppointmentReminder.objects.get(id=request.POST['todoid'])
+        appt_rem = AppointmentReminder.objects.get(id=request.POST['appt_id'])
         print(appt_rem)
         print(appt_rem.appt_date.appt_date)
         appt_rem.contacted_patient = "True"
@@ -30,3 +30,73 @@ class PatientContact(View):
         appt_rem.save()
         return redirect('/')
         # input type checkbox doesnt send input data if false
+
+class MedicationContact(View):
+    def post(self, request):
+
+        med_rem = MedicationReminder.objects.get(id=request.POST['med_id'])
+        print(med_rem)
+
+        med_rem.contacted_patient = "True"
+
+        med_rem.save()
+        return redirect('/')
+
+class SentMed(View):
+    def post(self, request):
+        print (request.POST)
+
+        med_rem = MedicationReminder.objects.get(id=request.POST['med_id'])
+
+        med_rem.sent = "True"
+
+        med_rem.save()
+        return redirect('/')
+
+
+class SentAppt(View):
+    def post(self, request):
+        print (request.POST)
+
+        appt_rem = AppointmentReminder.objects.get(id=request.POST['appt_id'])
+
+        appt_rem.sent = "True"
+
+        appt_rem.save()
+        return redirect('/')
+
+class MessageMed(View):
+    def post(self, request):
+        print (request.POST)
+
+        med_rem = MedicationReminder.objects.get(id=request.POST['med_id'])
+
+        med_rem.message = request.POST['med_message']
+
+        print (med_rem.message)
+
+        med_rem.save()
+        return redirect('/')
+
+class MessageAppt(View):
+    def post(self, request):
+        print(request.POST)
+
+        appt_rem = AppointmentReminder.objects.get(id=request.POST['appt_id'])
+
+        appt_rem.message = request.POST['appt_message']
+        print (appt_rem.message)
+        appt_rem.save()
+        return redirect('/')
+
+class FollowedUp(View):
+    def post(self, request):
+        print (request.POST)
+
+        appt_rem = AppointmentReminder.objects.get(id=request.POST['appt_id'])
+
+        appt_rem.followed_up = "True"
+        print ("Follow up?" + appt_rem.followed_up)
+
+        appt_rem.save()
+        return redirect('/')
