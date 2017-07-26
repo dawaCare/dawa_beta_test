@@ -7,22 +7,38 @@
   <title>Document</title>
 </head>
 <body>
+
   <h1>Medication Todos</h1>
-  {% for todo in med_todos %}
-  <ul>
-    <li>Date: {{todo.date}}</li>
-    <li>Contacted Patient? {{todo.contacted_patient}}</li>
-    <li>Sent? {{todo.sent}}</li>
-    <li>Message: {{todo.message}}</li>
-    <li>Medication Title: {{todo.prescribed_med.medication.name}}</li>
-    <li>Outpatient Name: {{todo.prescribed_med.outpatient.first_name}} {{todo.prescribed_med.outpatient.last_name}}</li>
-    <li>Dosage: {{todo.prescribed_med.dosage_num}} {{todo.prescribed_med.dosage_unit}}</li>
-    <li>Frequency: {{todo.prescribed_med.frequency}}</li>
-  </ul>
-  {% endfor %}
+    <table style="width:100%" border="1">
+      <tr>
+        <th>Date</th>
+        <th>Outpatient Name</th>
+        <th>Medication Title</th>
+        <th>Dosage</th>
+        <th>Frequency</th>
+        <th>End Date</th>
+        <th>Contacted Patient?</th>
+        <th>Sent?</th>
+        <th>Message</th>
+      </tr>
+      {% for todo in med_todos %}
+      <tr>
+        <td>{{todo.date}}</td>
+        <td>{{todo.prescribed_med.outpatient.first_name}}</td>
+        <td>{{todo.prescribed_med.medication.name}}</td>
+        <td>{{todo.prescribed_med.dosage_num}} {{todo.prescribed_med.dosage_unit}}</td>
+        <td>{{todo.prescribed_med.frequency}}</td>
+        <td>{{todo.end_date}}</td>
+        <td>{{todo.contacted_patient}}</td>
+        <td>{{todo.sent}}</td>
+        <td>{{todo.message}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
 
   <h1>Appointment Todos</h1>
-  <table style="width:100%">
+  <table style="width:100%" border="1">
     <tr>
       <th>Reminder Date</th>
       <th>Outpatient</th>
@@ -49,7 +65,11 @@
         <form action="{% url 'contacted_patient' %}" method="POST">
           {% csrf_token %}
           <input type="hidden" name="todoid" value="{{ todo.id }}">
+          {% if not todo.contacted_patient  %}
           <input type="submit" value="OK">
+          {% else %}
+          <p>Contacted!</p>
+          {% endif %}
         </form>
       </td>
       <td>{{todo.sent}}</td>

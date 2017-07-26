@@ -26,11 +26,14 @@ class Quarter(models.Model):
 
 class Address(models.Model):
     address1 = models.CharField("Address Line 1", max_length=1024)
-    address2 = models.CharField("Address Line 2", max_length=1024)
+    address2 = models.CharField("Address Line 2", max_length=1024, null=True)
     district = models.CharField(max_length=50)
     region = models.CharField(max_length=50)
     city = models.ForeignKey(City)
     quarter = models.ForeignKey(Quarter)
+
+    def __str__(self):
+        return self.address1
 
     class Meta:
         db_table = 'addresses'

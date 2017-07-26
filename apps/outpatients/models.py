@@ -55,6 +55,9 @@ class Allergy(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'allergies'
 
@@ -76,6 +79,9 @@ class Diagnosis(models.Model):
     description = models.TextField()
     category = models.ForeignKey(DiagnosisCategories)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'diagnoses'
 
@@ -87,13 +93,17 @@ class Medication(models.Model):
 
     # prescribers = models.ManyToManyField(Outpatient, through='PrescribedMed')
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'medications'
 
 class Outpatient(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    date_of_birth = models.DateTimeField("Date of Birth")
+    first_name = models.CharField(max_length=255, blank=True)
+    surname = models.CharField(max_length=255, blank=True)
+    middle_name = models.CharField(max_length=255, blank=True, null=True)
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name=("Date of Birth"))
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -102,15 +112,15 @@ class Outpatient(models.Model):
     # international country number
     idd = models.PositiveIntegerField(default=237)
     main_phone = models.CharField(max_length=10)
-    alt_phone = models.CharField(max_length=10, null=True)
+    alt_phone = models.CharField(max_length=10, blank=True, default="N/A")
     occupation = models.CharField(max_length=30, null=True)
-    address = models.ForeignKey(Address)
+    address = models.ForeignKey(Address, blank=True)
 
     pregnant = models.NullBooleanField()
     signed_consent_for_roi = models.BooleanField(default=True)
-    reason_for_not_signing_consent = models.TextField(null=True)
+    reason_for_not_signing_consent = models.TextField(blank=True)
     admitted = models.NullBooleanField()
-    consultation_fee = models.FloatField()
+    consultation_fee = models.FloatField(blank=True)
     has_all_prescribed_medications = models.BooleanField()
     issues_with_taking_medicatin = models.BooleanField()
 
