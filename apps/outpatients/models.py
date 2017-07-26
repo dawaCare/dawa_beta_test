@@ -9,6 +9,27 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 
+class TrackedModel(models.Model):
+    # these fields are set automatically from REST requests via
+    # updates from dict and the getter, setter properties, where available
+    # (from the update from dict mixin)
+    created = models.DateTimeField(blank=True, null=True)
+    updated = models.DateTimeField(blank=True, null=True)
+    created_by = models.ForeignKey(
+        User, blank=True, null=True,
+        # related_name="created_%(app_label)s_%(class)s_subrecords"
+        related_name='created_by'
+    )
+    updated_by = models.ForeignKey(
+        User, blank=True, null=True,
+        # related_name="updated_%(app_label)s_%(class)s_subrecords"
+        related_name='updated_by'
+    )
+
+    class Meta:
+        abstract = True
+
+
 
 class Specialty(models.Model):
     description = models.CharField(max_length=100)
@@ -35,21 +56,29 @@ class Doctor(models.Model):
     class Meta:
         db_table = 'doctors'
 
+    def __str__(self):
+        return self.last_name
+
 class Department(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
         db_table = 'departments'
 
+    def __str__(self):
+        return self.name
 
 class Facility(models.Model):
     name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=10)
-    address = models.ForeignKey(Address)
-    departments = models.ManyToManyField(Department)
+    phone = models.CharField(max_length=10, blank=True)
+    address = models.ForeignKey(Address, blank=True)
+    departments = models.ManyToManyField(Department, blank=True)
 
     class Meta:
         db_table = 'facilities'
+
+    def __str__(self):
+        return self.name
 
 class Allergy(models.Model):
     name = models.CharField(max_length=50)
@@ -67,12 +96,18 @@ class MedicationCategory(models.Model):
     class Meta:
         db_table = 'medication_categories'
 
+    def __str__(self):
+        return self.category
+
 
 class DiagnosisCategories(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
         db_table = 'diagnosis_categories'
+
+    def __str__(self):
+        return self.name
 
 class Diagnosis(models.Model):
     name = models.CharField(max_length=50)
@@ -99,9 +134,9 @@ class Medication(models.Model):
     class Meta:
         db_table = 'medications'
 
-class Outpatient(models.Model):
-    first_name = models.CharField(max_length=255, blank=True)
-    surname = models.CharField(max_length=255, blank=True)
+class Outpatient(TrackedModel, models.Model):
+    first_name = models.CharField(max_length=255)
+    surname = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255, blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True, verbose_name=("Date of Birth"))
     GENDER_CHOICES = (
@@ -113,26 +148,59 @@ class Outpatient(models.Model):
     idd = models.PositiveIntegerField(default=237)
     main_phone = models.CharField(max_length=10)
     alt_phone = models.CharField(max_length=10, blank=True, default="N/A")
-    occupation = models.CharField(max_length=30, null=True)
+    occupation = models.CharField(max_length=30, null=True, blank=True)
     address = models.ForeignKey(Address, blank=True)
 
     pregnant = models.NullBooleanField()
     signed_consent_for_roi = models.BooleanField(default=True)
-    reason_for_not_signing_consent = models.TextField(blank=True)
+    reason_for_not_signing_consent = models.TextField(blank=True, null=True)
     admitted = models.NullBooleanField()
     consultation_fee = models.FloatField(blank=True)
     has_all_prescribed_medications = models.BooleanField()
     issues_with_taking_medicatin = models.BooleanField()
 
-    diagnoses = models.ManyToManyField(Diagnosis)
-    allergies = models.ManyToManyField(Allergy)
+    diagnoses = models.ManyToManyField(Diagnosis, blank=True)
+    allergies = models.ManyToManyField(Allergy, blank=True)
     medications = models.ManyToManyField(Medication, through="PrescribedMed")
 
     def get_diagnoses(self):
-        return self.diagnoses.all()
+        # return self.diagnoses.all()
+        return "\n".join([d.name for d in self.diagnoses.all()])
+
+    get_diagnoses.short_description = 'Diagnoses'
 
     def get_meds(self):
-        return self.medications.all()
+        # return self.medications.all()
+        return "\n".join([m.name for m in self.medications.all()])
+
+    get_meds.short_description = 'Prescribed Meds'
+
+    def get_visits(self):
+
+        visits = Visit.objects.filter(outpatient=self.id)
+        print (visits)
+        strvisits = ""
+        for visit in visits:
+            print (visit.visit_date)
+            v = str(visit.visit_date)
+            print ("printing visit")
+            strvisits += v + ' '
+            print (strvisits)
+
+        return strvisits
+
+    def __str__(self):
+        return self.surname + ', ' + self.first_name
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #         self.created_by = user
+    #     self.updated = timezone.now()
+    #     self.updated_by = user
+    #     return super(User, self).save(*args, **kwargs)
+
+
     #
     # def get_visits(self):
     #     return self.visits.all()
@@ -145,15 +213,15 @@ class EmergencyContact(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     main_phone = models.CharField(max_length=10)
-    alt_phone = models.CharField(max_length=10, null=True)
+    alt_phone = models.CharField(max_length=10, null=True, blank=True)
     RELATIONSHIP_CHOICES = (
         ('Sib', 'Sibling'),
         ('M', 'Mother'),
         ('F', 'Father'),
         ('C', 'Cousin'),
     )
-    relationship = models.CharField(max_length=10, choices=RELATIONSHIP_CHOICES)
-    address = models.ForeignKey(Address)
+    relationship = models.CharField(max_length=10, choices=RELATIONSHIP_CHOICES, blank=True)
+    address = models.ForeignKey(Address, blank=True)
     outpatient = models.ForeignKey(Outpatient)
 
 
@@ -176,9 +244,9 @@ class PrescribedMed(models.Model):
 
 class Visit(models.Model):
     visit_date = models.DateTimeField()
-    doctors_note = models.TextField()
-    patient_received_ed = models.BooleanField()
-    lab_fee = models.FloatField()
+    doctors_note = models.TextField(blank=True)
+    patient_received_ed = models.BooleanField(default=False)
+    lab_fee = models.FloatField(blank=True)
 
     outpatient = models.ForeignKey(Outpatient)
     doctor = models.ForeignKey(Doctor)
@@ -198,8 +266,6 @@ class Appointment(models.Model):
 
     followed_up = models.BooleanField(default=False)
 
-
-
     class Meta:
         db_table = 'appointments'
 
@@ -211,9 +277,9 @@ class MedicationReminder(models.Model):
 
     contacted_patient = models.BooleanField(default=False)
     sent = models.BooleanField(default=False)
-    message = models.TextField()
+    message = models.TextField(blank=True)
 
-    date = models.DateTimeField()
+    date = models.DateField()
 
 
 
@@ -226,9 +292,9 @@ class AppointmentReminder(models.Model):
 
     contacted_patient = models.BooleanField(default=False)
     sent = models.BooleanField(default=False)
-    message = models.TextField()
+    message = models.TextField(blank=True)
 
-    date = models.DateTimeField()
+    date = models.DateField()
 
 
 
@@ -243,42 +309,5 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-
-# class TrackedModel(models.Model):
-#     # these fields are set automatically from REST requests via
-#     # updates from dict and the getter, setter properties, where available
-#     # (from the update from dict mixin)
-#     created = models.DateTimeField(blank=True, null=True)
-#     updated = models.DateTimeField(blank=True, null=True)
-#     created_by = models.ForeignKey(
-#         User, blank=True, null=True,
-#         # related_name="created_%(app_label)s_%(class)s_subrecords"
-#     )
-#     updated_by = models.ForeignKey(
-#         User, blank=True, null=True,
-#         # related_name="updated_%(app_label)s_%(class)s_subrecords"
-#     )
-#
-#     class Meta:
-#         abstract = True
-#
-#     def set_created_by_id(self, incoming_value, user, *args, **kwargs):
-#         if not self.id:
-#             # this means if a record is not created by the api, it will not
-#             # have a created by id
-#             self.created_by = user
-#
-#     def set_updated_by_id(self, incoming_value, user, *args, **kwargs):
-#         if self.id:
-#             self.updated_by = user
-#
-#     def set_updated(self, incoming_value, user, *args, **kwargs):
-#         if self.id:
-#             self.updated = timezone.now()
-#
-#     def set_created(self, incoming_value, user, *args, **kwargs):
-#         if not self.id:
-#             # this means if a record is not created by the api, it will not
-#             # have a created timestamp
-#
-#             self.created = timezone.now()
+    def __str__(self):
+        return self.comment

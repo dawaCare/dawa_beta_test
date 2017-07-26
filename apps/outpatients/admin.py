@@ -64,6 +64,9 @@ class OutpatientAdmin(NestedModelAdmin):
     extra = 1
     fk_name = 'Outpatient'
     inlines = [PrescribedMedInline, AppointmentInline, EmergencyContactInline, VisitInline]
+    list_display = ('surname', 'first_name', 'date_of_birth', 'address', 'get_diagnoses', 'get_meds', 'get_visits')
+    search_fields = ['surname', 'first_name']
+
 #
 # # class OutpatientAdmin(admin.ModelAdmin):
 # #     inlines = [

@@ -10,6 +10,9 @@ class Country(models.Model):
     class Meta:
         db_table = 'countries'
 
+    def __str__(self):
+        return self.country
+
 class City(models.Model):
     city = models.CharField(max_length=70)
     country = models.ForeignKey(Country)
@@ -18,17 +21,23 @@ class City(models.Model):
     class Meta:
         db_table = 'cities'
 
+    def __str__(self):
+        return self.city
+
 class Quarter(models.Model):
     quarter = models.CharField(max_length=70)
 
     class Meta:
         db_table = 'quarters'
 
+    def __str__(self):
+        return self.quarter
+
 class Address(models.Model):
     address1 = models.CharField("Address Line 1", max_length=1024)
-    address2 = models.CharField("Address Line 2", max_length=1024, null=True)
-    district = models.CharField(max_length=50)
-    region = models.CharField(max_length=50)
+    address2 = models.CharField("Address Line 2", max_length=1024, null=True, blank=True)
+    district = models.CharField(max_length=50, blank=True)
+    region = models.CharField(max_length=50, blank=True)
     city = models.ForeignKey(City)
     quarter = models.ForeignKey(Quarter)
 
