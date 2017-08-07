@@ -155,9 +155,10 @@ class Outpatient(TrackedModel, models.Model):
     signed_consent_for_roi = models.BooleanField(default=True)
     reason_for_not_signing_consent = models.TextField(blank=True, null=True)
     admitted = models.NullBooleanField()
+    admission_fee = models.IntegerField(blank=True, null=True)
     consultation_fee = models.FloatField(blank=True)
     has_all_prescribed_medications = models.BooleanField()
-    issues_with_taking_medicatin = models.BooleanField()
+    issues_with_taking_medication = models.BooleanField()
 
     diagnoses = models.ManyToManyField(Diagnosis, blank=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
@@ -239,6 +240,8 @@ class PrescribedMed(models.Model):
     dosage_unit = models.CharField(max_length=10)
     end_date = models.DateField(null=True)
 
+
+
     class Meta:
         db_table = 'prescribedmeds'
 
@@ -280,8 +283,6 @@ class MedicationReminder(models.Model):
     message = models.TextField(blank=True)
 
     date = models.DateField()
-
-
 
     class Meta:
         db_table = 'med_reminders'
